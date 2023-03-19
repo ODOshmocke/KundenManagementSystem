@@ -22,5 +22,6 @@ class UserInformation(models.Model):
 
 
 
+
 def __str__(self):
         return self.nachname + " " + self.vorname

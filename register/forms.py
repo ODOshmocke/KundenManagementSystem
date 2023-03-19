@@ -12,4 +12,4 @@ class UserInformationForm(ModelForm):
 
         model = UserInformation
 
-        exclude = ['erstellt']
+        exclude = ['erstellt', 'gesendet']
