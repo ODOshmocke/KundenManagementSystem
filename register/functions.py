@@ -5,7 +5,9 @@ from .emails import send_mails
 def checking_emails():
     time.sleep(1)
     from .models import UserInformation
-    from backend.models import Changes
+
+    '''
+    from dashboard.models import Changes
 
     all_changes = Changes.objects.filter().all()
     all_users = UserInformation.objects.filter().all()
@@ -24,6 +26,7 @@ def checking_emails():
 
                     print(obj.email_text)
 
+'''
 
 '''
         for information in all_changes:

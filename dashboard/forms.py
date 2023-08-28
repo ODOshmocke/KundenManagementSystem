@@ -1,13 +1,13 @@
 from django.forms import ModelForm
-from .models import email_information
+from .models import emailInformation
 
 
 class CreateEmailDelayForm(ModelForm):
 
     class Meta:
 
-        model = email_information
-        fields = ['email_betreff','email_text', 'email_zeit']
+        model = emailInformation
+        fields = ['emailBetreff', 'emailText', 'anzahlTageZumSenden']
         labels = {
             'email_betreff': 'Betreff',
             'email_text': 'Hier den Email inhalt eingeben',

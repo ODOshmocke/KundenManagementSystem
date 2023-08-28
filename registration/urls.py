@@ -16,10 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from register.views import register
-from backend.views import backend
+from dashboard.views import dashboard
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("register/", register),
-    path("backend/", backend),
+    path("dashboard/", dashboard),
 ]

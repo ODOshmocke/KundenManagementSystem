@@ -14,10 +14,10 @@ class UserInformation(models.Model):
     erstellt = models.DateTimeField(default=django.utils.timezone.now)
     geschlecht = models.CharField(choices=(('Mann', 'Mann'), ('Frau', 'Frau'), ('nicht definiert', 'nicht definiert')), max_length=20, default="nicht definiert")
     notiz = models.CharField(blank=True, null=True, max_length=1000)
-    data = {}
 
 
-    gesendet = models.JSONField(null=True, blank=True)
+    emailDaten = models.JSONField(null=True, blank=True)
+
 
 
 

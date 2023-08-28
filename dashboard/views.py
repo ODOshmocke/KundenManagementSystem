@@ -6,8 +6,7 @@ from django.db import models
 from register.models import UserInformation
 
 
-def backend(request):
-
+def dashboard(request):
     if request.method == 'POST':
         print("POST")
 
@@ -19,18 +18,13 @@ def backend(request):
             print(obj_id)
             new_email = {obj_id: False}
 
-
-            all_users = UserInformation.objects.all()
-            for user in all_users:
-                user.gesendet.update(new_email)
-                user.save()
+            alleKunden = UserInformation.objects.all()
+            for kunden in alleKunden:
+                kunden.emailDaten.update(new_email)
+                kunden.save()
 
 
     else:
         form = CreateEmailDelayForm()
-        print("GET")
 
-
-
-    return render(request, 'indexBackend.html', {'form' : form})
-
+    return render(request, 'indexDashboard.html', {'form': form})
