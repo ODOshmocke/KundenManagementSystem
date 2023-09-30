@@ -5,8 +5,51 @@
 {% block content %}
     <form method="post">
         {% csrf_token %}
-        {{ form | crispy }}
+        {{ formularKundendaten | crispy }}
+
+        <hr style="margin-top: 4%">
+
+        <label ><input type="checkbox" id="idDatenschutzCheckbox" onchange="zeigFormular('idDatenschutzCheckbox', 'idDatenschutzFormular')"> Datenschutz</label>
+        <div id="idDatenschutzFormular" style="display: none">
+            {{ pdfFormularDatenschutz | crispy }}
+        </div>
+
+        <hr>
+
+        <label><input type="checkbox" id="idPatientenerklärungCheckbox" onchange="zeigFormular('idPatientenerklärungCheckbox', 'idPatientenerklärungFormular')"> Patientenerklärung</label>
+        <div id="idPatientenerklärungFormular" style="display: none">
+            {{ pdfFormularPatientenerklärung | crispy }}
+        </div>
+
+        <hr>
+
+        <div>
+
+            <label ><input type="checkbox" id="idHöherwerigeversorgungCheckbox" onchange="zeigFormular('idHöherwerigeversorgungCheckbox', 'idHöherwerigeversorgungFormular')"> Höherwerigeversorgung</label>
+            <div id="idHöherwerigeversorgungFormular" style="display: none">
+                {{ pdfFormularHöherwerigeversorgung | crispy }}
+            </div>
+        </div>
+
+        <hr>
 
         <button type="submit" class="btn btn-primary">Hinzufügen</button>
     </form>
+
+
+<script>
+
+function zeigFormular(idCheckbox, idFormular) {
+    var checkBox = document.getElementById(idCheckbox);
+    var formular = document.getElementById(idFormular);
+    if (checkBox.checked == true){
+        formular.style.display = "block";
+    } else {
+       formular.style.display = "none";
+    }
+}
+
+</script>
+
+
 {% endblock %}
