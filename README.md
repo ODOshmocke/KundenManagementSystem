@@ -13,6 +13,7 @@ Install my-project with npm
     pip install APScheduler
     pip3 install django-crispy-forms
     pip install crispy-bootstrap4
+    pip install PyMuPDF
 
 ```
 ## Tasks
