@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing</title>
+    <style>
+        .container{
+            margin-top: 1%;
+            width: 100%;
+            height: 50%;
+            justify-content: center;
+            border-radius: 50px;
+        }
+        .button-obj{
+            display: flex;
+            flex-direction: row;
+            position: relative;
+
+        }
+        .save, .clear, .connect{
+            margin-left: 5%; margin-right: 5%;
+            border-radius: 5px;
+            border: 1px solid black;
+            width: 100%;
+            height: 35px;
+            background-color: #f2f2f2;
+        }
+        .save{
+            margin-left: 5%;
+            left: 150%;
+        }
+        canvas {
+            border: 1px solid black;
+            border-radius: 15px;
+
+            padding: 0;
+            margin: auto;
+            display: block;
+            width: 95%;
+            height: 60%;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="button-obj">
+        <button class="clear">Clear</button>
+        <button class="connect">Connect</button>
+        <button class="save">Save</button>
+    </div>
+    <canvas id="canvas"></canvas>
+
+</div>
+
+
+<!-- HTML-Formular -->
+<form method="POST" id="unterschrift-form">
+    {% csrf_token %}
+    <input type="hidden" name="canvasData" id="hiddenImage">
+</form>
+
+</body>
+</html>
+
+<script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const body = document.querySelector("body");
+    // Set width to 100% of the parent container
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    let lineW = 1;
+    let prevX = null;
+    let prevY = null;
+    let draw = false;
+
+    function getMousePosition(canvas, event) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+
+        const x = (event.clientX - rect.left) * scaleX;
+        const y = (event.clientY - rect.top) * scaleY;
+        return {x, y};
+    }
+
+    canvas.addEventListener("mousedown", (e) => {
+        draw = true;
+        const {x, y} = getMousePosition(canvas, e);
+        prevX = x;
+        prevY = y;
+    });
+
+    canvas.addEventListener("mouseup", (e) => (draw = false));
+
+    canvas.addEventListener("mousemove", (e) => {
+        if (!draw) return;
+
+        const {x, y} = getMousePosition(canvas, e);
+
+        ctx.beginPath();
+        ctx.moveTo(prevX, prevY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+
+        prevX = x;
+        prevY = y;
+    });
+
+    let clearBtn = document.querySelector(".clear");
+    clearBtn.addEventListener("click", () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    let saveBtn = document.querySelector(".save");
+    saveBtn.addEventListener("click", () => {
+        document.getElementById("hiddenImage").value = canvas.toDataURL("image/png");
+        document.forms["unterschrift-form"].submit();
+    });
+</script>
+
