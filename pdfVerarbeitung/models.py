@@ -6,6 +6,7 @@ from django import forms
 
 class PdfInformationDatenschutz(forms.Form):
     # Datenschutz.py
+    medizinische_verordnung_model = forms.CharField(max_length=100, required=False, label="Medizinische Verordnung")
     gegenstand_der_verordnung_einlagen_model = forms.BooleanField(required=False, label="Gegenstand der Verordnung: "
                                                                                         "Einlagen")
     gegenstand_der_verordnung_zurichtung_model = forms.BooleanField(required=False, label="Gegenstand der Verordnung: "

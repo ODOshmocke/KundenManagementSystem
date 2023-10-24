@@ -1,14 +1,16 @@
 import os
 
-PDF_KUNDEN_VERZEICHNISS = "KundenManagementSystem/pdfVerarbeitung/pdfKundenVerzeichniss"
+PDF_KUNDEN_VERZEICHNISS = "KundenManagementSystem/pdfVerarbeitung/kundenunterlagen/"
 
 
 def verzeichnissNamenErstellen(kunde):
-    return str(kunde.id + "_" + kunde.vorname + "_" + kunde.nachname).lower()
+    return str(str(kunde.id) + "_" + kunde.vorname + "_" + kunde.nachname).lower()
 
 
-def verzeichnissErstellen(kunde):
+def verzeichnissErstellen(kunde, weg):
     verzeichnissName = verzeichnissNamenErstellen(kunde)
-    if not os.path.exists(verzeichnissName):
-        os.makedirs(verzeichnissName)
-    return verzeichnissName
+    kommpletteWegZumKundenverzeichnis = os.path.join(weg, verzeichnissName)
+    verzeichnissExistiert = os.path.exists(kommpletteWegZumKundenverzeichnis)
+    if not verzeichnissExistiert:
+        os.makedirs(kommpletteWegZumKundenverzeichnis)
+    return verzeichnissName, kommpletteWegZumKundenverzeichnis, verzeichnissExistiert

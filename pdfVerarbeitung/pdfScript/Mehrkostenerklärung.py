@@ -1,66 +1,103 @@
 import fitz
+from pdfVerarbeitung.pdfFunktionen import verzeichnissErstellen
 import os
+
+
 # PDF-Datei öffnen
 
-if os.path.exists('../PDFTester/tempPDF/Patientenerklärung.pdf'):
-    pdf = fitz.open('pdfVorlagen/Mehrkostenerklärung.pdf')
-else:
-    pdf = fitz.open('pdfVorlagen/Mehrkostenerklärung.pdf')
+def pdfÖffnen(kunde):
+    _, pfadKundenordner, verzeichnissExistiert = verzeichnissErstellen(kunde, "pdfVerarbeitung/kundenunterlagen/")
+    if os.path.exists(pfadKundenordner + "/Mehrkostenerklärung.pdf"):
+        pdf = fitz.open(pfadKundenordner + "/Mehrkostenerklärung.pdf")
+    else:
+        pdf = fitz.open('pdfVerarbeitung/pdfVorlagen/Mehrkostenerklärung.pdf')
+    seite = pdf[0]
 
-# Seite auswählen
-seite = pdf[0]
+    return seite, pdf, pfadKundenordner
 
 
-dateiSpeichern = 'tempPDF'
+dateiSpeichern = 'tempPdf'
 hoehe = 9
 breite = 9
 
 
-
-def ich_habe_mich_fuer_eine_versorgung_mit_aufzahlung__mehrkosten__entschieden():
+def ich_habe_mich_fuer_eine_versorgung_mit_aufzahlung__mehrkosten__entschieden(kunde):
+    seite, pdf, pfadKundenordner = pdfÖffnen(kunde)
     y_kreuz = 167
     x_kreuz_mehrkosten = 63
 
     seite.draw_line(fitz.Point(x_kreuz_mehrkosten, y_kreuz), fitz.Point(x_kreuz_mehrkosten + breite, y_kreuz + hoehe))
     seite.draw_line(fitz.Point(x_kreuz_mehrkosten, y_kreuz + hoehe), fitz.Point(x_kreuz_mehrkosten + breite, y_kreuz))
+    pdfSpeichern(pdf, pfadKundenordner)
 
 
-def ich_habe_mich_fuer_folgende_versorgung_entschieden(versorgung_Text):
+def ich_habe_mich_fuer_folgende_versorgung_entschieden(kunde, versorgung_Text=''):
+    seite, pdf, pfadKundenordner = pdfÖffnen(kunde)
+
     y_zeile1 = 245
     y_zeile2 = 280
 
     x_text = 85
 
-    print(len(versorgung_Text))
-    geteilter_index = versorgung_Text.rfind(" ", 0, 100)
+    geteilter_index = versorgung_Text.rfind(" ", 0, 90)
 
-    if geteilter_index == -1:
-        seite.insert_text((x_text, y_zeile1), versorgung_Text, fontsize=11, rotate=0, color=(0, 0, 0), overlay=True)
+    print(geteilter_index, "geteilter_index")
+
+    if len(versorgung_Text) <= 90:
+        seite.insert_text((x_text, y_zeile1), versorgung_Text, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
     else:
-        seite.insert_text((x_text, y_zeile1), versorgung_Text[:geteilter_index], fontsize=11, rotate=0, color=(0, 0, 0), overlay=True)
-        seite.insert_text((x_text, y_zeile2), versorgung_Text[geteilter_index + 1:], fontsize=11, rotate=0, color=(0, 0, 0), overlay=True)
+        seite.insert_text((x_text, y_zeile1), versorgung_Text[:geteilter_index], fontsize=10, rotate=0, color=(0, 0, 0),
+                          overlay=True)
+        seite.insert_text((x_text, y_zeile2), versorgung_Text[geteilter_index + 1:], fontsize=10, rotate=0,
+                          color=(0, 0, 0), overlay=True)
+    pdfSpeichern(pdf, pfadKundenordner)
 
 
+def datum_stempel_text(kunde, text_datum, text_stempel):
+    seite, pdf, pfadKundenordner = pdfÖffnen(kunde)
 
-
-def datum_stempel_text(text_datum, text_stempel):
     y_datum_und_stempel = 496
     x_datum = 87
     x_stempel = 350
 
     seite.insert_text((x_datum, y_datum_und_stempel), text_datum, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
-    seite.insert_text((x_stempel, y_datum_und_stempel), text_stempel, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
+    seite.insert_text((x_stempel, y_datum_und_stempel), text_stempel, fontsize=10, rotate=0, color=(0, 0, 0),
+                      overlay=True)
+    pdfSpeichern(pdf, pfadKundenordner)
 
 
-ich_habe_mich_fuer_eine_versorgung_mit_aufzahlung__mehrkosten__entschieden()
-ich_habe_mich_fuer_folgende_versorgung_entschieden("including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do")
-datum_stempel_text("01.01.2021", "Stempel")
+# ich_habe_mich_fuer_folgende_versorgung_entschieden("Test")
+# ich_habe_mich_fuer_eine_versorgung_mit_aufzahlung__mehrkosten__entschieden("Test")
+# datum_stempel_text("Test", "Test", "Test")
 
 
-try:
-    pdf.save(f"{dateiSpeichern}/Mehrkostenerklärung.pdf")
-except Exception as e:
-    pdf.save(f"{dateiSpeichern}/Mehrkostenerklärung.pdf", incremental=True, encryption=fitz.PDF_ENCRYPT_KEEP)
-pdf.close()
+def pdfFunktionenAufrufen(pdfFunktionen, kunde):
+    ich_habe_mich_fuer_eine_versorgung_mit_aufzahlung__mehrkosten__entschieden(kunde)
+    ich_habe_mich_fuer_folgende_versorgung_entschieden(kunde)
+    datum_stempel_text(kunde, "Test", "Test")
+
+    mehrkostenerklärungFunktionen = {
+        "ich_habe_mich_fuer_eine_versorgung_mit_aufzahlung_mehrkosten_entschieden_model": ich_habe_mich_fuer_eine_versorgung_mit_aufzahlung__mehrkosten__entschieden,
+        "ich_habe_mich_fuer_folgende_versorgung_entschieden_model": ich_habe_mich_fuer_folgende_versorgung_entschieden,
+        # "datum_stempel_text_model": datum_stempel_text
+    }
+
+    for funktion, parameter in pdfFunktionen.items():
+        if funktion in mehrkostenerklärungFunktionen:
+            # print(funktion, parameter)
+            if parameter is True or parameter is False or parameter is None or parameter == "":
+                print(parameter)
+                mehrkostenerklärungFunktionen[funktion](kunde)
+            else:
+                print(parameter)
+                mehrkostenerklärungFunktionen[funktion](kunde, parameter)
 
 
+def pdfSpeichern(pdf, pfadKundenordner):
+    try:
+        #        pdf.save(pfadKundenordner + "/Mehrkostenerklärung.pdf")
+
+        pdf.save(pfadKundenordner + "/Mehrkostenerklärung.pdf")
+    except:
+        pdf.save(f"{pfadKundenordner}/Mehrkostenerklärung.pdf", incremental=True, encryption=fitz.PDF_ENCRYPT_KEEP)
+    pdf.close()

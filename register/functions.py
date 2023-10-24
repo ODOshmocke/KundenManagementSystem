@@ -4,7 +4,7 @@ from .emails import send_mails
 
 def checking_emails():
     time.sleep(1)
-    from .models import UserInformation
+    from .models import KundenDaten
 
     '''
     from dashboard.models import Changes

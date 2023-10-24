@@ -3,7 +3,7 @@ from .forms import CreateEmailDelayForm
 from django.apps import apps
 from django.db.utils import OperationalError
 from django.db import models
-from register.models import UserInformation
+from register.models import KundenDaten
 
 
 def dashboard(request):
