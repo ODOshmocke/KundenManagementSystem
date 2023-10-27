@@ -17,12 +17,9 @@ from django.contrib import admin
 from django.urls import path
 from register.views import register
 from dashboard.views import dashboard
-from pdfVerarbeitung.views import unterschriftView
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("register/", register),
     path("dashboard/", dashboard),
-    path("unterschrift/", unterschriftView)
 ]
