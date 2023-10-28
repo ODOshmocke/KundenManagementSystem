@@ -9,6 +9,9 @@ def unterschriftView(request):
     if request.method == "POST":
         unterschriftFormular = UnterschriftFormular(request.POST)
         if unterschriftFormular.is_valid():
+            connection_code = request.POST.get("connection_code")
+            print(connection_code)
+
             canvas_data = request.POST.get("canvasData")
             canvas_data = canvas_data.replace("data:image/png;base64,", "")
             binary_data = base64.b64decode(canvas_data)

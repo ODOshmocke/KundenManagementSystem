@@ -17,6 +17,7 @@ from django.urls import path
 from register.views import register
 from dashboard.views import dashboard
 from pdfVerarbeitung.views import unterschriftView
+from django.contrib import admin
 
 
 urlpatterns = [
