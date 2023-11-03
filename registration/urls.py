@@ -17,6 +17,7 @@ from django.urls import path
 from register.views import register
 from dashboard.views import dashboard
 from pdfVerarbeitung.views import unterschriftView
+from pdfVerarbeitung.views import unterschriftsBestaetigungView
 from django.contrib import admin
 
 
@@ -24,5 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("register/", register),
     path("dashboard/", dashboard),
-    path("unterschrift/", unterschriftView)
+    path("unterschrift/", unterschriftView),
+    path("unterschriftsbestaetigung/", unterschriftsBestaetigungView),
 ]

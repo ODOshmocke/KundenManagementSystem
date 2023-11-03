@@ -27,11 +27,15 @@
 
             <label ><input type="checkbox" id="idHöherwerigeversorgungCheckbox" onchange="zeigFormular('idHöherwerigeversorgungCheckbox', 'idHöherwerigeversorgungFormular')"> Höherwerigeversorgung</label>
             <div id="idHöherwerigeversorgungFormular" style="display: none">
-                {{ pdfFormularHöherwerigeversorgung | crispy }}
+                {{ pdfFormularHöherwerigeversorgung | crispy}}
             </div>
         </div>
 
         <hr>
+
+        <div>
+                <i class="fa-regular fa-circle-check"></i>
+        </div>
 
         <button type="submit" class="btn btn-primary">Hinzufügen</button>
     </form>
@@ -48,6 +52,20 @@ function zeigFormular(idCheckbox, idFormular) {
        formular.style.display = "none";
     }
 }
+
+$(docment).ready(function () {
+    $.ajax({
+        url: "{% url 'unterschriftsbestaetigung' %}",
+        type: "GET",
+        success: function (response) {
+            console.log(response);
+
+        },
+
+    })
+})
+
+
 
 </script>
 

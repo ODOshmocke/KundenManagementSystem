@@ -1,4 +1,5 @@
 import datetime
+import random
 
 from django.shortcuts import render
 from .forms import kundenDatenForm
@@ -10,8 +11,13 @@ from pdfVerarbeitung.models import PdfInformationDatenschutz, \
 
 
 def register(request):
+
+    verbindungsCodeErstellt = random.randint(1000, 9999)
+
     if request.method == "POST":
         print("Post")
+
+        request.session["verbindungsCodeErstellt"] = verbindungsCodeErstellt
 
         formularKundendaten = kundenDatenForm(request.POST)
         pdfFormularDatenschutz = PdfInformationDatenschutz(request.POST)
@@ -48,6 +54,8 @@ def register(request):
     return render(request, 'indexRegister.html',
                   {
                       "formularKundendaten": formularKundendaten,
+                      "verbindungsCode": verbindungsCodeErstellt,
+
                       "pdfFormularDatenschutz": pdfFormularDatenschutz,
                       "pdfFormularPatientenerklärung": pdfFormularPatientenerklärung,
                       "pdfFormularHöherwerigeversorgung": pdfFormularHöherwerigeversorgung})

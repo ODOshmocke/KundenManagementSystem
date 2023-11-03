@@ -46,9 +46,12 @@
         }
 
     </style>
+
+
 </head>
 <body onLoad="window.scroll(0, -150)">
 <div class="container">
+
 
     <div class="button-obj">
         <button class="clear">Clear</button>
@@ -77,8 +80,12 @@
     const ctx = canvas.getContext("2d");
     const body = document.querySelector("body");
 
+
+
     function setzeWertZurueck() {
-        document.getElementById("connect").value = "";
+        const inputCode = document.getElementById("connect");
+        inputCode.value = "";
+        inputCode.type = "number";
     }
 
 
