@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from .forms import UnterschriftFormular
-from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import base64
 

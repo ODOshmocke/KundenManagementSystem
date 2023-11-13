@@ -54,15 +54,20 @@ function zeigFormular(idCheckbox, idFormular) {
 }
 
 $(docment).ready(function () {
-    $.ajax({
-        url: "{% url 'unterschriftsbestaetigung' %}",
-        type: "GET",
-        success: function (response) {
-            console.log(response);
+    setInterval(function () {
+        $.ajax({
+            url: "{% url 'unterschriftsbestaetigung' %}",
+            type: "GET",
+            success: function (response) {
+                const unterschriftsbestaetigung = response.unterschriftsbestaetigung;
+                if (unterschriftsbestaetigung) {
 
-        },
+                }
 
-    })
+            },
+
+        })
+    }, 5000)
 })
 
 

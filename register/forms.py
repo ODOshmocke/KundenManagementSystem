@@ -13,5 +13,5 @@ class kundenDatenForm(ModelForm):
         model = KundenDaten
 
 
-        exclude = ['erstellt', 'emailDaten']
+        exclude = ['erstellt', 'emailDaten', 'unterschrift']
 

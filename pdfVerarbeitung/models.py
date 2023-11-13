@@ -39,3 +39,4 @@ class PdfInformationHöherwerigeversorgung(forms.Form):
     # höherwerigeversorgung.py
     ich_habe_mich_fuer_eine_versorgung_mit_aufzahlung_mehrkosten_entschieden_model = forms.BooleanField(required=False, label="Ich habe mich für eine Versorgung mit Aufzahlung/Mehrkosten entschieden")
     ich_habe_mich_fuer_folgende_versorgung_entschieden_model = forms.CharField(max_length=200, required=False, label="Ich habe mich für folgende Versorgung entschieden")
+

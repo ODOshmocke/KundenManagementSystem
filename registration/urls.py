@@ -14,11 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
+from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
+
 from register.views import register
 from dashboard.views import dashboard
 from pdfVerarbeitung.views import unterschriftView
 from pdfVerarbeitung.views import unterschriftsBestaetigungView
-from django.contrib import admin
 
 
 urlpatterns = [
@@ -26,5 +29,5 @@ urlpatterns = [
     path("register/", register),
     path("dashboard/", dashboard),
     path("unterschrift/", unterschriftView),
-    path("unterschriftsbestaetigung/", unterschriftsBestaetigungView),
-]
+    path("unterschriftsbestaetigung/", unterschriftsBestaetigungView, name="unterschriftsbestaetigung"),
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
