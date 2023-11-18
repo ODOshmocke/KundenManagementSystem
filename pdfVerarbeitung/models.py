@@ -40,3 +40,15 @@ class PdfInformationHöherwerigeversorgung(forms.Form):
     ich_habe_mich_fuer_eine_versorgung_mit_aufzahlung_mehrkosten_entschieden_model = forms.BooleanField(required=False, label="Ich habe mich für eine Versorgung mit Aufzahlung/Mehrkosten entschieden")
     ich_habe_mich_fuer_folgende_versorgung_entschieden_model = forms.CharField(max_length=200, required=False, label="Ich habe mich für folgende Versorgung entschieden")
 
+class UnterschriftsVerknuepfung(models.Model):
+    verbindungsCode = models.IntegerField(blank=True, null=True)
+    unterschriftPfad = models.ImageField(upload_to="unterschriften/", blank=True, null=True)
+
+    def __str__(self):
+        return str(self.verbindungsCode)
+
+class GeradeAngemeldet(models.Model):
+    verbindungsCode = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return str(self.verbindungsCode)

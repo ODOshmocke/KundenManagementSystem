@@ -49,18 +49,19 @@
 
 
 </head>
-<body onLoad="window.scroll(0, -150)">
+<body>
 <div class="container">
 
 
     <div class="button-obj">
         <button class="clear">Clear</button>
 
-        <input type="text" class="connect" id="connect" value="Code" onclick="setzeWertZurueck()">
+        <input type="number" class="connect" id="connect" placeholder="Verbindungsode">
 
         <button class="save">Save</button>
     </div>
     <canvas id="canvas"></canvas>
+
 
 </div>
 
@@ -80,13 +81,6 @@
     const ctx = canvas.getContext("2d");
     const body = document.querySelector("body");
 
-
-
-    function setzeWertZurueck() {
-        const inputCode = document.getElementById("connect");
-        inputCode.value = "";
-        inputCode.type = "number";
-    }
 
 
     canvas.height = window.innerHeight;
@@ -140,7 +134,15 @@
 
     let saveBtn = document.querySelector(".save");
     saveBtn.addEventListener("click", () => {
+
+        if (document.getElementById("connect").value === "") {
+            document.getElementById("connect").style.borderColor = "red";
+            document.getElementById("connect").style.borderWidth = "2px";
+            return;
+        }
+
         document.getElementById("hiddenConnect").value = document.getElementById("connect").value;
+
 
         document.getElementById("hiddenImage").value = canvas.toDataURL("image/png");
         document.forms["unterschrift-form"].submit();

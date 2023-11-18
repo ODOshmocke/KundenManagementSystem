@@ -1,8 +1,16 @@
-{% extends 'base.html' %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-{% load crispy_forms_tags %}
+</head>
+<body>
+<div class="container">
+    {% load crispy_forms_tags %}
 
-{% block content %}
     <form method="post">
         {% csrf_token %}
         {{ formularKundendaten | crispy }}
@@ -34,12 +42,27 @@
         <hr>
 
         <div>
-                <i class="fa-regular fa-circle-check"></i>
+            <div style="font-weight: bold; text-decoration: underline; font-size: larger">
+                Verbindungscode:
+                {{ verbindungsCode }}
+            </div>
+            <div style="font-weight: bold; display: flex; font-size: larger;">
+                Unterschriftsbestätigung: &nbsp;
+                <div id="nichtVerbunden" style="display: block; text-decoration: underline;">
+                    nicht verbunden
+                </div>
+                <div id="verbunden" style="display: none; text-decoration: underline;">
+                    verbunden
+                </div>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Hinzufügen</button>
-    </form>
+        <hr>
 
+        <input type="hidden" name="verbindungsCode" value="{{ verbindungsCode }}">
+        <button type="submit" class="btn btn-primary">Hinzufügen</button>
+        <div id="verbindungsCodeValue" data-url="{{ verbindungsCode }}"></div>
+    </form>
 
 <script>
 
@@ -53,26 +76,31 @@ function zeigFormular(idCheckbox, idFormular) {
     }
 }
 
-$(docment).ready(function () {
+$(document).ready(function () {
     setInterval(function () {
         $.ajax({
             url: "{% url 'unterschriftsbestaetigung' %}",
-            type: "GET",
-            success: function (response) {
-                const unterschriftsbestaetigung = response.unterschriftsbestaetigung;
-                if (unterschriftsbestaetigung) {
-
-                }
-
+            type: "POST",
+            dataType: "json",
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                'verbindungsCode': document.getElementById("verbindungsCodeValue").getAttribute("data-url"),
             },
-
-        })
-    }, 5000)
-})
+            success: function (response) {
+                console.log(response);
+                if (response.bestätigt) {
+                    console.log("bestätigt m besten");
+                    document.getElementById("nichtVerbunden").style.display = "none";
+                    document.getElementById("verbunden").style.display = "block";
+                }
+            },
+        });
+    }, 5000);
+});
 
 
 
 </script>
-
-
-{% endblock %}
+</div>
+</body>
+</html>

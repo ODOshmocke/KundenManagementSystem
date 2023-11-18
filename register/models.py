@@ -15,7 +15,7 @@ class KundenDaten(models.Model):
     geschlecht = models.CharField(choices=(('Mann', 'Mann'), ('Frau', 'Frau'), ('nicht definiert', 'nicht definiert')),
                                   max_length=20, default="nicht definiert")
     notiz = models.CharField(blank=True, null=True, max_length=1000)
-    unterschrift = models.ImageField(upload_to='unterschriften/', blank=True, null=True)
+    verbindungsCode = models.IntegerField(blank=True, null=True)
 
     emailDaten = models.JSONField(default=dict)
     erstellt = models.DateTimeField(default=django.utils.timezone.now)

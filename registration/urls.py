@@ -29,5 +29,5 @@ urlpatterns = [
     path("register/", register),
     path("dashboard/", dashboard),
     path("unterschrift/", unterschriftView),
-    path("unterschriftsbestaetigung/", unterschriftsBestaetigungView, name="unterschriftsbestaetigung"),
+    path("unterschriftsbestaetigung", unterschriftsBestaetigungView, name="unterschriftsbestaetigung"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
