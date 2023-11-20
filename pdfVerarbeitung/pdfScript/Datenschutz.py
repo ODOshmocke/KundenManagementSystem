@@ -53,8 +53,7 @@ def personen_daten(kunde, datumHeute):
     pdfSpeichern(pdf, pfadKundenordner)
 
 
-def medizinische_verordnung(kunde, text_medizinische_verordnung='DAS IST EIN TEST'):
-    print("medizinische_verordnung")
+def medizinische_verordnung(kunde, text_medizinische_verordnung=''):
     seite, pdf, pfadKundenordner = pdfÖffnen(kunde)
     x_medizinische_verordnung = 290
     y_medizinische_verordnung = 277

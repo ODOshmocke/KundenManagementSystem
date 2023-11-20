@@ -192,7 +192,6 @@ def pdfFunktionenAufrufen(pdfFunktionen, kunde):
             if parameter is True or parameter is False or parameter is None or parameter == "":
                 patientenerklärungFunktionen[funktion](kunde)
             else:
-                print("funktion",funktion, "Parameter: ", parameter)
                 patientenerklärungFunktionen[funktion](kunde, parameter)
 
 

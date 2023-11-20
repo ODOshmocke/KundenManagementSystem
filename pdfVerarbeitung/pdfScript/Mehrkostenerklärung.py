@@ -41,7 +41,6 @@ def ich_habe_mich_fuer_folgende_versorgung_entschieden(kunde, versorgung_Text=''
 
     geteilter_index = versorgung_Text.rfind(" ", 0, 90)
 
-    print(geteilter_index, "geteilter_index")
 
     if len(versorgung_Text) <= 90:
         seite.insert_text((x_text, y_zeile1), versorgung_Text, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
@@ -84,12 +83,9 @@ def pdfFunktionenAufrufen(pdfFunktionen, kunde):
 
     for funktion, parameter in pdfFunktionen.items():
         if funktion in mehrkostenerklärungFunktionen:
-            # print(funktion, parameter)
             if parameter is True or parameter is False or parameter is None or parameter == "":
-                print(parameter)
                 mehrkostenerklärungFunktionen[funktion](kunde)
             else:
-                print(parameter)
                 mehrkostenerklärungFunktionen[funktion](kunde, parameter)
 
 

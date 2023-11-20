@@ -13,14 +13,12 @@ def unterschriftView(request):
     if request.method == "POST" or request.method == "FILES":
         unterschriftFormular = UnterschriftFormular(request.POST)
         unterschriftsVerknuepfung = UnterschriftsVerknuepfungForm(request.POST)
-        print(unterschriftFormular.is_valid(), unterschriftsVerknuepfung.is_valid())
 
 
         if unterschriftFormular.is_valid() and unterschriftsVerknuepfung.is_valid():
 
             verbindungsCode = request.POST.get("connection_code")
 
-            print(verbindungsCode, "verbindungsCode")
 
             #Bild wird in base64 codiert und in ein Bild umgewandelt
             canvas_data = request.POST.get("canvasData")
@@ -34,7 +32,7 @@ def unterschriftView(request):
             unterschrift_verknuepfung.unterschriftPfad.save(f"{verbindungsCode}_unterschrift.png", ContentFile(binary_data))# das sieht sehr sketchy aus
             unterschrift_verknuepfung.save()
             GeradeAngemeldet.objects.create(verbindungsCode=verbindungsCode)
-            print(unterschrift_verknuepfung.unterschriftPfad.url)
+            print("Unterschrift wurde gespeichert")
 
 
             '''bildPfad = "unterschrift.png"
@@ -52,12 +50,10 @@ def unterschriftView(request):
 
 def unterschriftsBestaetigungView(request):
     verbindungsCodeRegister = int(request.POST.get("verbindungsCode"))
-    print(verbindungsCodeRegister, "verbindungsCodeRegister")
     verbindungsCodesDatenbank = list(GeradeAngemeldet.objects.values_list("verbindungsCode", flat=True))
-    print(verbindungsCodeRegister, "verbindungsCodeRegister", verbindungsCodesDatenbank, "verbindungsCodesDatenbank")
     if verbindungsCodeRegister in verbindungsCodesDatenbank:
-        print("bestätigt")
+        print("Unterschrift bestätigt")
         return JsonResponse({"bestätigt": True})
     else:
-        print("nicht bestätigt")
+        print("Unterschrift nicht bestätigt")
         return JsonResponse({"bestätigt": False})

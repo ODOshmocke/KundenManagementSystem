@@ -23,8 +23,10 @@ def verbindungsCodeErstellen():
 
 def unterschriftZumVerzeichnissHinzufügen(kunde):
     verbindungsCode = str(kunde.verbindungsCode)
-    print(verbindungsCode, "verbindungsCode in unterschriftZumVerzeichnissHinzufügen")
-    shutil.copy(f"media/unterschriften/{verbindungsCode}_unterschrift.png", f"pdfVerarbeitung/kundenunterlagen/{verzeichnissNamenErstellen(kunde)}/unterschrift.png")
+    try:
+        shutil.copy(f"media/unterschriften/{verbindungsCode}_unterschrift.png", f"pdfVerarbeitung/kundenunterlagen/{verzeichnissNamenErstellen(kunde)}/unterschrift.png")
+    except:
+        print("Unterschrift konnte nicht gefunden werden")
 
 
 
@@ -32,8 +34,6 @@ def unterschriftZumVerzeichnissHinzufügen(kunde):
 def register(request):
 
     if request.method == "POST":
-        print("Post")
-
 
 
         verbindungsCode = request.POST.get("verbindungsCode")
@@ -48,8 +48,8 @@ def register(request):
         if formularKundendaten.is_valid():
             kunde = formularKundendaten.save(commit=False)
             kunde.verbindungsCode = verbindungsCode
-            print(kunde.verbindungsCode, "verbindungsCode in register before save und move")
             kunde.save()
+            print("Kunde wurde gespeichert")
 
             _, kommpletteWegZumKundenverzeichnis, _ = verzeichnissErstellen(kunde, "pdfVerarbeitung/kundenunterlagen/")
             unterschriftZumVerzeichnissHinzufügen(kunde)
