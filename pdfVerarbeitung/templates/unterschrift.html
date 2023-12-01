@@ -54,13 +54,17 @@
 
 
     <div class="button-obj">
+        <button class="fullscreen">Fullscreen</button>
         <button class="clear">Clear</button>
 
         <input type="number" class="connect" id="connect" placeholder="Verbindungsode">
 
         <button class="save">Save</button>
     </div>
-    <canvas id="canvas"></canvas>
+    <div class="bgcanvas">
+        <canvas id="canvas"></canvas>
+    </div>
+
 
 
 </div>
@@ -72,21 +76,38 @@
     <input type="hidden" name="canvasData" id="hiddenImage">
     <input type="hidden" name="connection_code" id="hiddenConnect">
 </form>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, minimal-ui">
 
 </body>
+
 </html>
 
 <script>
+    window.screen.orientation.lock("landscape-primary");
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     const body = document.querySelector("body");
 
+    //enter full screen
+    enterFullScreen();
 
+    function enterFullScreen(element) {
+        if (element.requestFullscreen) {
+            console.log("fullscreen");
+            element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        }
+    }
 
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
 
-    let lineW = 1;
+    let lineW = 6;
     let prevX = null;
     let prevY = null;
     let draw = false;
@@ -120,11 +141,20 @@
         ctx.beginPath();
         ctx.moveTo(prevX, prevY);
         ctx.lineTo(x, y);
+
+        ctx.lineWidth = lineW;
+
         ctx.stroke();
+        ctx.strokeStyle = "blue";
 
         prevX = x;
         prevY = y;
         e.preventDefault();
+    });
+
+    let fullscreenBtn = document.querySelector(".fullscreen");
+    fullscreenBtn.addEventListener("click", () => {
+        enterFullScreen(document.getElementById("bgcanvas"));
     });
 
     let clearBtn = document.querySelector(".clear");

@@ -1,5 +1,5 @@
 import fitz
-from pdfVerarbeitung.pdfFunktionen import verzeichnissErstellen
+from pdfVerarbeitung.pdfFunktionen import verzeichnissErstellen,  verzeichnissNamenErstellen
 import os
 # PDF-Datei öffnen
 
@@ -49,7 +49,17 @@ def personen_daten(kunde, datumHeute):
     seite.insert_text((x_text, y_adresse), text_adresse, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
     seite.insert_text((x_text, y_email), text_email, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
     seite.insert_text((x_text, y_kv_nummer), text_kv_nummer, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
+
+    unterschriftPfad = f"pdfVerarbeitung/kundenunterlagen/{verzeichnissNamenErstellen(kunde)}/unterschrift.png"
+
+    if os.path.exists(unterschriftPfad):
+        print("Unterschrift gefunden in " + unterschriftPfad)
+        bild = open(unterschriftPfad, "rb").read()
+        seite.insert_image(fitz.Rect(150, 720, 240, 850), stream=bild, overlay=True)
+    else:
+        print("Unterschrift nicht gefunden in " + unterschriftPfad)
     seite.insert_text((x_datum, y_datum), text_datum, fontsize=15, rotate=0, color=(0, 0, 0), overlay=True)
+
     pdfSpeichern(pdf, pfadKundenordner)
 
 

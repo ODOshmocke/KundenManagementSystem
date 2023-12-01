@@ -1,6 +1,8 @@
 import datetime
+import json
 import random
 import shutil
+import urllib.parse
 
 from django.shortcuts import render
 from .forms import kundenDatenForm
@@ -12,38 +14,63 @@ from pdfVerarbeitung.pdfScript import Datenschutz, Patientenerklärung, \
 from pdfVerarbeitung.models import PdfInformationDatenschutz, \
     PdfInformationPatientenerklärung, PdfInformationHöherwerigeversorgung
 
+
 def verbindungsCodeErstellen():
     ausgeschlosseneCodes = KundenDaten.objects.values_list("verbindungsCode", flat=True)
     verbindungsCodeErstellt = random.randint(1000, 9999)
     if verbindungsCodeErstellt in ausgeschlosseneCodes:
         verbindungsCodeErstellen()
     return verbindungsCodeErstellt
-    
 
 
 def unterschriftZumVerzeichnissHinzufügen(kunde):
     verbindungsCode = str(kunde.verbindungsCode)
     try:
-        shutil.copy(f"media/unterschriften/{verbindungsCode}_unterschrift.png", f"pdfVerarbeitung/kundenunterlagen/{verzeichnissNamenErstellen(kunde)}/unterschrift.png")
+        shutil.copy(f"media/unterschriften/{verbindungsCode}_unterschrift.png",
+                    f"pdfVerarbeitung/kundenunterlagen/{verzeichnissNamenErstellen(kunde)}/unterschrift.png")
     except:
         print("Unterschrift konnte nicht gefunden werden")
 
 
+def register(request, kundenDaten=None, kundenDatenInitial=None):
+    global encodedKundenDatenJson
+    if kundenDaten != None:
+        encodedKundenDaten = urllib.parse.parse_qs(kundenDaten)
+        encodedKundenDatenJson = json.loads(json.dumps(encodedKundenDaten))  # in json umwandeln
+
+        #remove list from dict
+        for key in encodedKundenDatenJson:
+            encodedKundenDatenJson[key] = encodedKundenDatenJson[key][0]
+
+        if encodedKundenDatenJson["geschlecht"].lower() == "m":
+            encodedKundenDatenJson["geschlecht"] = "Männlich"
+        else:
+            encodedKundenDatenJson["geschlecht"] = "Weiblich"
+
+        kundenDatenInitial = {
+            "vorname": encodedKundenDatenJson["vorname"],
+            "nachname": encodedKundenDatenJson["nachname"],
+            "strasse": encodedKundenDatenJson["strasse"],
+            "ort_plz": encodedKundenDatenJson["ort_plz"],
+            "krankenkasse": encodedKundenDatenJson["versicherungsname"],
+            "geburtsdatum": encodedKundenDatenJson["geburtsdatum"],
+            "geschlecht": encodedKundenDatenJson["geschlecht"],
+            "kv_nummer": encodedKundenDatenJson["kv_nummer"],
+        }
+        print(encodedKundenDatenJson, "encodedKundenDaten")
+        print(type(encodedKundenDatenJson), "type encodedKundenDaten")
 
 
-def register(request):
+
 
     if request.method == "POST":
 
-
         verbindungsCode = request.POST.get("verbindungsCode")
-
 
         formularKundendaten = kundenDatenForm(request.POST)
         pdfFormularDatenschutz = PdfInformationDatenschutz(request.POST)
         pdfFormularPatientenerklärung = PdfInformationPatientenerklärung(request.POST)
         pdfFormularHöherwerigeversorgung = PdfInformationHöherwerigeversorgung(request.POST)
-
 
         if formularKundendaten.is_valid():
             kunde = formularKundendaten.save(commit=False)
@@ -53,6 +80,8 @@ def register(request):
 
             _, kommpletteWegZumKundenverzeichnis, _ = verzeichnissErstellen(kunde, "pdfVerarbeitung/kundenunterlagen/")
             unterschriftZumVerzeichnissHinzufügen(kunde)
+            print("Verzeichniss wurde erstellt", kommpletteWegZumKundenverzeichnis)
+
 
 
             datumHeute = datetime.date.today().strftime("%d.%m.%Y")
@@ -70,7 +99,10 @@ def register(request):
 
 
     else:
-        formularKundendaten = kundenDatenForm()
+        if kundenDatenInitial != None:
+             formularKundendaten = kundenDatenForm(initial=kundenDatenInitial)
+        else:
+            formularKundendaten = kundenDatenForm()
 
         pdfFormularDatenschutz = PdfInformationDatenschutz()
         pdfFormularPatientenerklärung = PdfInformationPatientenerklärung()
@@ -79,7 +111,7 @@ def register(request):
     return render(request, 'indexRegister.html',
                   {
                       "formularKundendaten": formularKundendaten,
-                      "verbindungsCode":verbindungsCodeErstellen(),
+                      "verbindungsCode": verbindungsCodeErstellen(),
                       "pdfFormularDatenschutz": pdfFormularDatenschutz,
                       "pdfFormularPatientenerklärung": pdfFormularPatientenerklärung,
                       "pdfFormularHöherwerigeversorgung": pdfFormularHöherwerigeversorgung})

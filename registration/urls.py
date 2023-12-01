@@ -27,6 +27,7 @@ from pdfVerarbeitung.views import unterschriftsBestaetigungView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("register/", register),
+    path("register/<str:kundenDaten>", register),
     path("dashboard/", dashboard),
     path("unterschrift/", unterschriftView),
     path("unterschriftsbestaetigung", unterschriftsBestaetigungView, name="unterschriftsbestaetigung"),
