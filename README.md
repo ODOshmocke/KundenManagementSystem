@@ -14,7 +14,9 @@ Install my-project with npm
     pip3 install django-crispy-forms
     pip install crispy-bootstrap4
     pip install PyMuPDF
-    pip install Pillow 
+    pip install Pillow
+    npm install instascan
+
 
 ```
 ## Tasks
