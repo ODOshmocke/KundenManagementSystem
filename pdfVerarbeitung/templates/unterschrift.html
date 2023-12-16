@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Fügen Sie dieses Skript in den Head-Bereich Ihrer HTML-Datei ein -->
+    <script src="https://cdn.rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+
     <meta charset="UTF-8">
     <title>Testing</title>
     <style>
@@ -19,30 +22,103 @@
             margin-bottom: 1%;
 
         }
-        .save, .clear, .connect, .connect{
-            margin-left: 5%; margin-right: 5%;
+        .save, .clear, .connect, .openQrCodeScanner{
+            transform: rotate(90deg);
+            margin: 15% -3% 5%;
             border-radius: 5px;
             border: 1px solid black;
-            width: 100%;
-            height: 35px;
+            width: 60%;
+            height: 50px;
             background-color: white;
         }
 
+        .dropdown{
+            transition: 0.5s;
+            transform: rotate(270deg);
+            border-radius: 5px;
+            border: 1px solid black;
+            width: 50%;
+            height: 40px;
+            background-color: white;
+            margin-top: 10%;
+            margin-left: -10%;
+            margin-right: -5%;
+        }
+
+        .closeQRCodeScanner{
+            display: none;
+            overflow: hidden;
+            position: absolute;
+            align-items: center;
+            justify-content: center;
+            float: right;
+            margin-left: 90%;
+            margin-top: 10%;
+            transform: rotate(90deg);
+            border-radius: 5px;
+            border: 1px solid black;
+            width: 10vw;
+            height: 10vw;
+            background-color: white;
+
+            z-index: 999;
+        }
+
         .connect{
-            width: 80%;
-            text-align: center;
+            box-sizing: border-box;
         }
 
         canvas {
+            transition: 0.5s;
             border: 1px solid black;
             border-radius: 15px;
-
             padding: 0;
             margin: auto;
             margin-bottom: 1%;
             display: block;
+            width: 93%;
+            height: 93%;
+            background-color: white;
+        }
+
+        #qr-reader-background {
+            display: none;
+            width: 150%;
+            height: 150%;
+            margin: -100px;
+            position: fixed;
+
+            backdrop-filter: blur(10px);
+            z-index: 998;
+        }
+
+        #qr-reader {
+            display: none;
+            width: 50%;
+            height: 40%;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            z-index: 999;
+        }
+
+        #qr-reader video {
             width: 100%;
-            height: 50%;
+            height: 100%;
+            overflow: hidden;
+            object-fit: cover;
+            horiz-align: center;
+            aspect-ratio: 1/1;
+        }
+
+        ::placeholder{
+            text-align: center;
+        }
+
+        input {
+            text-align: center;
         }
 
     </style>
@@ -52,23 +128,37 @@
 <body>
 <div class="container">
 
+    <div id="qr-reader-background"></div>
+    <div id="qr-reader">
+        <video autoplay="true" id="qr-code-preview"></video>
+    </div>
 
     <div class="button-obj">
-        <button class="fullscreen">Fullscreen</button>
-        <button class="clear">Clear</button>
-
+        <button class="openQrCodeScanner" id="openQrCodeScanner" onclick="openQrCodeScanner()" >QR-Code</button>
+        <button class="clear" >Clear</button>
         <input type="number" class="connect" id="connect" placeholder="Verbindungsode">
+        <button class="save" id="save">Save</button>
+        <button class="closeQRCodeScanner" id="closeQRCodeScanner" onclick="closeQrCodeScanner()" >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+            </svg>
+        </button>
+        <button class="dropdown" id="dropdown" onclick="dropdownFunction()" >
 
-        <button class="save">Save</button>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5M8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6"/>
+            </svg>
+
+        </button>
     </div>
-    <div class="bgcanvas">
+
+
+
+    <div class="bgcanvas" style="height: 150%">
         <canvas id="canvas"></canvas>
     </div>
 
-
-
 </div>
-
 
 <!-- HTML-Formular -->
 <form method="POST" id="unterschrift-form">
@@ -83,29 +173,100 @@
 </html>
 
 <script>
-    window.screen.orientation.lock("landscape-primary");
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     const body = document.querySelector("body");
 
-    //enter full screen
-    enterFullScreen();
 
-    function enterFullScreen(element) {
-        if (element.requestFullscreen) {
-            console.log("fullscreen");
-            element.requestFullscreen();
-        } else if (element.webkitRequestFullscreen) {
-            element.webkitRequestFullscreen();
-        } else if (element.mozRequestFullScreen) {
-            element.mozRequestFullScreen();
-        } else if (element.msRequestFullscreen) {
-            element.msRequestFullscreen();
+    let isDropdown = false;
+
+    function closeQrCodeScanner(){
+            document.getElementById("qr-reader-background").style.display = "none";
+            document.getElementById("qr-reader").style.display = "none";
+            document.getElementById("closeQRCodeScanner").style.display = "none";
+            return;
+        }
+
+    function openQrCodeScanner(){
+
+        // Verwenden Sie die Instascan-Bibliothek
+        document.getElementById("qr-reader-background").style.display = "block";
+        document.getElementById("qr-reader").style.display = "block";
+        document.getElementById("closeQRCodeScanner").style.display = "flex";
+        let scanner = new Instascan.Scanner({
+            video: document.getElementById('qr-code-preview'),
+            aspectRatio: 1
+        });
+
+        // Hinzufügen eines Ereignislisteners für das Finden eines QR-Codes
+        scanner.addListener('scan', function (content) {
+            onScanSuccess(content);
+            alert(content);
+            closeQrCodeScanner();
+
+        });
+
+        // Starten Sie den Scanner, wenn die Kamera bereit ist
+
+        Instascan.Camera.getCameras().then(function (cameras) {
+            if (cameras.length > 0) {
+                scanner.start(cameras[0]);
+            } else {
+                console.error('Keine Kamera gefunden.');
+            }
+        }).catch(function (e) {
+            onScanError(e);
+        });
+
+
+
+        function onScanSuccess(qrCodeMessage) {
+            console.log(qrCodeMessage);
+        }
+
+        function onScanError(errorMessage) {
+            console.log(errorMessage);
+        }
+
+    }
+    function dropdownFunction(){
+
+        isDropdown = !isDropdown;
+
+        let dropdownButton = document.getElementById("dropdown");
+        let connect = document.getElementById("connect");
+        let save = document.getElementById("save");
+        let clear = document.querySelector(".clear");
+        let openQrCodeScanner = document.querySelector(".openQrCodeScanner");
+
+        if (isDropdown) {
+            dropdownButton.style.transform = "rotate(90deg)";
+            dropdownButton.style.width = "10%";
+            dropdownButton.style.marginLeft = "90%";
+            dropdownButton.style.marginTop = "0%";
+
+            connect.style.display = "none";
+            save.style.display = "none";
+            clear.style.display = "none";
+            openQrCodeScanner.style.display = "none";
+
+        } else {
+            dropdownButton.style.transform = "rotate(270deg)";
+            dropdownButton.style.width = "50%";
+            dropdownButton.style.marginLeft = "-10%";
+            dropdownButton.style.marginRight = "-5%";
+            dropdownButton.style.marginTop = "10%";
+
+            connect.style.display = "block";
+            save.style.display = "block";
+            clear.style.display = "block";
+            openQrCodeScanner.style.display = "block";
         }
     }
 
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
+
+    canvas.height = window.innerHeight * 0.93;
+    canvas.width = window.innerWidth * 0.93;
 
     let lineW = 6;
     let prevX = null;
@@ -152,10 +313,7 @@
         e.preventDefault();
     });
 
-    let fullscreenBtn = document.querySelector(".fullscreen");
-    fullscreenBtn.addEventListener("click", () => {
-        enterFullScreen(document.getElementById("bgcanvas"));
-    });
+
 
     let clearBtn = document.querySelector(".clear");
     clearBtn.addEventListener("click", () => {

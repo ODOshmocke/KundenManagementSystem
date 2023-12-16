@@ -1,5 +1,5 @@
 import fitz
-from pdfVerarbeitung.pdfFunktionen import verzeichnissErstellen
+from pdfVerarbeitung.pdfFunktionen import verzeichnissErstellen, verzeichnissNamenErstellen
 import os
 
 
@@ -52,16 +52,30 @@ def ich_habe_mich_fuer_folgende_versorgung_entschieden(kunde, versorgung_Text=''
     pdfSpeichern(pdf, pfadKundenordner)
 
 
-def datum_stempel_text(kunde, text_datum, text_stempel):
+def datum_stempel_text(kunde, datumHeute, text_stempel):
+    text_datum = str(datumHeute)
     seite, pdf, pfadKundenordner = pdfÖffnen(kunde)
 
     y_datum_und_stempel = 496
+    y_unterschrift = 440
     x_datum = 87
+    x_unterschrift = 165
     x_stempel = 350
 
     seite.insert_text((x_datum, y_datum_und_stempel), text_datum, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
     seite.insert_text((x_stempel, y_datum_und_stempel), text_stempel, fontsize=10, rotate=0, color=(0, 0, 0),
                       overlay=True)
+
+    unterschriftPfad = f"pdfVerarbeitung/kundenunterlagen/{verzeichnissNamenErstellen(kunde)}/unterschrift.png"
+
+    if os.path.exists(unterschriftPfad):
+        print("Unterschrift gefunden in " + unterschriftPfad)
+        bild = open(unterschriftPfad, "rb").read()
+        seite.insert_image(fitz.Rect(x_unterschrift, y_unterschrift, x_unterschrift + 100, y_unterschrift + 50), stream=bild, overlay=True, rotate=90)
+    else:
+        print("Unterschrift nicht gefunden in " + unterschriftPfad)
+
+
     pdfSpeichern(pdf, pfadKundenordner)
 
 

@@ -1,14 +1,113 @@
-{% extends 'base.html' %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/f2e85778f9.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
 
-{% load crispy_forms_tags %}
+        h1 {
+            font-size: 30px;
+            color: black;
+            text-align: center;
+        }
+
+        .outlines {
+            border: 1px #3b3f42 groove;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        .überschriftEmailKonfigurieren {
+            font-size: 20px;
+            color: black;
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+        }
 
 
-{% block content %}
-    <h1> Hier kannst du eine automatisierte Email konfigurieren</h1>
+    </style>
+</head>
+<body>
+<div class="container">
+    {% load crispy_forms_tags %}
 
-    <form method="post" id="day-form">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary">Hinzufügen</button>
-    </form>
-{% endblock %}
+    <h1 class="überschriftEmailKonfigurieren outlines"> Hier kannst du eine automatisierte E-Mail erstellen</h1>
+
+    <div style="display: flex;">
+
+        <form method="post" id="day-form" style="width: 80%;">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Hinzufügen</button>
+        </form>
+
+        <div class="outlines" style="height: 90%; width: 200px; ">
+            <h4 style="text-decoration: underline"> Info </h4>
+            <h5> Für personalisierte E-Mails Verwende: </h5>
+            <hr>
+            <p>%Vornamen%</p>
+            <p>%Nachnamen%</p>
+            <p>%Ansprache%</p>
+            <p>%Email%</p>
+            <p>%Telefon%</p>
+            <p>%Geburtstag%</p>
+            <p>%KvNummer%</p>
+            <p>%KvName%</p>
+        </div>
+    </div>
+
+    <hr style="background-color: black">
+
+    <h1 class="outlines">Daten des Leistungserbringers</h1>
+
+        <div class="outlines">
+
+            <div style="display: flex">
+                <h4>Unterschrift</h4>
+            </div>
+
+
+            <div style="display: flex">
+                <img src="/{{ MEDIA_URL }}unterschriften/2719_unterschrift_3Vzvf9u.png" width="400" height="200" class="outlines">
+
+
+                    <div id="qrCodeLeistungserbringer" style="margin-left: 3%; margin-top: 1%;"></div>
+
+                    <div style="margin-left: 3%">
+
+                        <h5 class="outlines" style="height: auto"> Zum Ändern Qr-Code Scannen. Sonst geben Sie {{ UnterschriftsCode }} als Verbindungscode ein.
+                            <a href="http://localhost:8000/unterschrift/" target="_blank" rel="noopener noreferrer">Link zur Unterschrift eingabe</a></h5>
+
+                        <h5 class="outlines" style="height: auto; position: relative"> Zum Ändern Qr-Code Scannen. Sonst geben Sie {{ UnterschriftsCode }} als Verbindungscode ein.</h5>
+
+                    </div>
+
+            </div>
+
+        </div>
+
+    
+</div>
+
+
+</body>
+
+
+<script>
+    var qrcode = new QRCode(document.getElementById("qrCodeLeistungserbringer"), {
+        text: "https://www.google.com",
+        width: 200,
+        height: 200,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+
+
+
+</script>
+</html>

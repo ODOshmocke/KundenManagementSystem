@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 
 </head>
 <body>
@@ -41,30 +42,54 @@
 
         <hr>
 
-        <div>
-            <div style="font-weight: bold; text-decoration: underline; font-size: larger">
-                Verbindungscode:
-                {{ verbindungsCode }}
-            </div>
-            <div style="font-weight: bold; display: flex; font-size: larger;">
-                Unterschriftsbestätigung: &nbsp;
-                <div id="nichtVerbunden" style="display: block; text-decoration: underline;">
-                    nicht verbunden
+        <div style="overflow: hidden">
+            <div style="float: left"> <!-- Die Zeile mit dem VerbindungsCode aber ohne QrCode -->
+
+                <div style="font-weight: bold; text-decoration: underline; font-size: larger">
+                    Verbindungscode:
+                    {{ verbindungsCode }}
                 </div>
-                <div id="verbunden" style="display: none; text-decoration: underline;">
-                    verbunden
+
+                <div style="font-weight: bold; display: flex; font-size: larger;">
+
+                    Unterschriftsbestätigung: &nbsp;
+                    <div id="nichtVerbunden" style="display: block; text-decoration: underline;">
+                        nicht verbunden
+                    </div>
+
+                    <div id="verbunden" style="display: none; text-decoration: underline;">
+                        verbunden
+                    </div>
+
                 </div>
+
             </div>
+
+            <div>
+                <div id="qrCode" style="float: right"></div>
+            </div>
+
         </div>
 
         <hr>
 
         <input type="hidden" name="verbindungsCode" value="{{ verbindungsCode }}">
-        <button type="submit" class="btn btn-primary">Hinzufügen</button>
+        <button type="submit" class="btn btn-primary" style="margin-bottom: 5%">Hinzufügen</button>
         <div id="verbindungsCodeValue" data-url="{{ verbindungsCode }}"></div>
     </form>
 
 <script>
+
+
+    var qrcode = new QRCode(document.getElementById("qrCode"), {
+        text: document.getElementById("verbindungsCodeValue").getAttribute("data-url"),
+        width : 100,
+        height : 100
+    });
+
+
+
+
 
 function zeigFormular(idCheckbox, idFormular) {
     var checkBox = document.getElementById(idCheckbox);

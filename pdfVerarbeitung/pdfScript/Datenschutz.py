@@ -22,7 +22,7 @@ breite = 10  # Breite des Rechtecks
 hoehe = 10  # Höhe des Rechtecks
 
 
-def personen_daten(kunde, datumHeute):
+def personen_daten(kunde, datumHeute, ortHeute=''):
     seite, pdf, pfadKundenordner = pdfÖffnen(kunde)
 
     text_name = kunde.vorname + " " + kunde.nachname
@@ -31,6 +31,7 @@ def personen_daten(kunde, datumHeute):
     text_email = kunde.email
     text_kv_nummer = kunde.kv_nummer
     text_datum = str(datumHeute)
+    text_ort = str(ortHeute)
 
 
     y_name = 149  # y-Koordinate
@@ -39,26 +40,31 @@ def personen_daten(kunde, datumHeute):
     y_email = 253
     y_medizinische_verordnung = 277
     y_kv_nummer = 373
-    y_datum = 800
+    y_datum = 798
     x_name = 110  # x-Koordinate
     x_text = 290  # x-Koordinate
     x_datum = 70
+    x_unterschrift = 100
+    y_unterschrift = 730
+    x_ort = 290
+    y_ort = 750
 
     seite.insert_text((x_name, y_name), text_name, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
     seite.insert_text((x_text, y_geburtsdatum), text_geburtsdatum, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
     seite.insert_text((x_text, y_adresse), text_adresse, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
     seite.insert_text((x_text, y_email), text_email, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
     seite.insert_text((x_text, y_kv_nummer), text_kv_nummer, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
+    #seite.insert_text((x_ort, y_ort), text_ort, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
 
     unterschriftPfad = f"pdfVerarbeitung/kundenunterlagen/{verzeichnissNamenErstellen(kunde)}/unterschrift.png"
 
     if os.path.exists(unterschriftPfad):
         print("Unterschrift gefunden in " + unterschriftPfad)
         bild = open(unterschriftPfad, "rb").read()
-        seite.insert_image(fitz.Rect(150, 720, 240, 850), stream=bild, overlay=True)
+        seite.insert_image(fitz.Rect(x_unterschrift, y_unterschrift, x_unterschrift + 100, y_unterschrift + 50), stream=bild, overlay=True, rotate=90)
     else:
         print("Unterschrift nicht gefunden in " + unterschriftPfad)
-    seite.insert_text((x_datum, y_datum), text_datum, fontsize=15, rotate=0, color=(0, 0, 0), overlay=True)
+    seite.insert_text((x_datum, y_datum), text_datum, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
 
     pdfSpeichern(pdf, pfadKundenordner)
 

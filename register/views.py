@@ -96,6 +96,7 @@ def register(request, kundenDaten=None, kundenDatenInitial=None):
 
             if pdfFormularHöherwerigeversorgung.is_valid():
                 Mehrkostenerklärung.pdfFunktionenAufrufen(pdfFormularHöherwerigeversorgung.cleaned_data, kunde)
+                Mehrkostenerklärung.datum_stempel_text(kunde, datumHeute, "Stempel")
 
 
     else:

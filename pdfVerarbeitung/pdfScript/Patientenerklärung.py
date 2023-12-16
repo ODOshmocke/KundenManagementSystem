@@ -1,4 +1,4 @@
-from pdfVerarbeitung.pdfFunktionen import verzeichnissErstellen
+from pdfVerarbeitung.pdfFunktionen import verzeichnissErstellen, verzeichnissNamenErstellen
 import fitz
 import os
 # PDF-Datei öffnen
@@ -46,6 +46,12 @@ def personen_daten(kunde, datumHeute):
     y_kv_nummer = 187
     y_verordnung = 213
 
+    y_datum = 782
+    y_unterschrift = 730
+    x_unterschrift = 150
+    x_datum = 87
+    x_stempel = 350
+
     x_daten = 200
 
     seite.insert_text((x_daten, y_name), text_name, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
@@ -55,6 +61,21 @@ def personen_daten(kunde, datumHeute):
                       overlay=True)
     seite.insert_text((x_daten, y_kv_nummer), text_kv_nummer, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
     seite.insert_text((x_daten, y_verordnung), text_verordnung, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
+
+
+    seite.insert_text((x_datum, y_datum), text_verordnung, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
+
+    unterschriftPfad = f"pdfVerarbeitung/kundenunterlagen/{verzeichnissNamenErstellen(kunde)}/unterschrift.png"
+
+    if os.path.exists(unterschriftPfad):
+        print("Unterschrift gefunden in " + unterschriftPfad)
+        bild = open(unterschriftPfad, "rb").read()
+        seite.insert_image(fitz.Rect(x_unterschrift, y_unterschrift, x_unterschrift + 100, y_unterschrift + 50),
+                           stream=bild, overlay=True, rotate=90)
+    else:
+        print("Unterschrift nicht gefunden in " + unterschriftPfad)
+
+
     pdfSpeichern(pdf, pfadKundenordner)
 
 
@@ -156,17 +177,6 @@ def dass_ich_nicht_mit_orthopaedischen_schuhenversorgt_wurde(kunde):
     seite.draw_line(fitz.Point(x_kreuz_normal, y_kreuz_10 + hoehe), fitz.Point(x_kreuz_normal + breite, y_kreuz_10))
     pdfSpeichern(pdf, pfadKundenordner)
 
-
-def datum_stempel_text(kunde, text_datum, text_stempel):
-    seite, pdf, pfadKundenordner = pdfÖffnen(kunde)
-
-    y_datum = 782
-    x_datum = 87
-    x_stempel = 350
-
-    seite.insert_text((x_datum, y_datum), text_datum, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
-    seite.insert_text((x_stempel, y_datum), text_stempel, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
-    pdfSpeichern(pdf, pfadKundenordner)
 
 
 
