@@ -28,14 +28,34 @@
             text-align: center;
         }
 
+        .zentrierter-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Horizontale Zentrierung */
+            align-items: center; /* Vertikale Zentrierung */
+
+        }
+
+        .box-automatisierte-email {
+            width: 80%;
+        }
+
+        .daten-des-Leistungserbringers {
+            width: 80%;
+            display: flex;
+            flex-direction: row;
+        }
+
 
     </style>
 </head>
 <body>
-<div class="container">
+<div class="zentrierter-container">
     {% load crispy_forms_tags %}
 
     <h1 class="überschriftEmailKonfigurieren outlines"> Hier kannst du eine automatisierte E-Mail erstellen</h1>
+    <div class="outlines box-automatisierte-email" >
+
 
     <div style="display: flex;">
 
@@ -59,40 +79,49 @@
             <p>%KvName%</p>
         </div>
     </div>
+    </div>
 
     <hr style="background-color: black">
 
     <h1 class="outlines">Daten des Leistungserbringers</h1>
+    <div class="daten-des-Leistungserbringers outlines">
 
-        <div class="outlines">
 
-            <div style="display: flex">
+
+            <div class="outlines" id="unterschrift-box" style="display: flex; flex-direction: column; align-items: center; order: 1">
+
                 <h4>Unterschrift</h4>
-            </div>
 
+                <div style="display: flex; flex-direction: row; ">
 
-            <div style="display: flex">
-                <img src="/{{ MEDIA_URL }}unterschriften/2719_unterschrift_3Vzvf9u.png" width="400" height="200" class="outlines">
-
-
-                    <div id="qrCodeLeistungserbringer" style="margin-left: 3%; margin-top: 1%;"></div>
-
-                    <div style="margin-left: 3%">
-
-                        <h5 class="outlines" style="height: auto"> Zum Ändern Qr-Code Scannen. Sonst geben Sie {{ UnterschriftsCode }} als Verbindungscode ein.
-                            <a href="http://localhost:8000/unterschrift/" target="_blank" rel="noopener noreferrer">Link zur Unterschrift eingabe</a></h5>
-
-                        <h5 class="outlines" style="height: auto; position: relative"> Zum Ändern Qr-Code Scannen. Sonst geben Sie {{ UnterschriftsCode }} als Verbindungscode ein.</h5>
-
+                    <div style="order: 2; padding-left: 10%;">
+                        <!-- QR-Code auf der rechten Seite -->
+                        <div id="qrCodeLeistungserbringer"></div>
                     </div>
 
+                    <img src="/{{ MEDIA_URL }}unterschriften/2719_unterschrift_3Vzvf9u.png" width="500" height="250" class="outlines" style="order: 1; margin-left: -5%">
+                    <!-- Bild auf der linken Seite -->
+
+                </div>
+
+                <div style="margin-top: 1%;" id="qr-code-begründung">
+
+                    <h5 class="outlines" style="height: auto"> Zum Ändern Qr-Code Scannen. Sonst geben Sie {{ UnterschriftsCode }} als Verbindungscode ein.
+                        <a href="http://localhost:8000/unterschrift/" target="_blank" rel="noopener noreferrer">Link zur Unterschrift eingabe</a></h5>
+
+
+                </div>
+
             </div>
 
-        </div>
+            <div class="outlines" style=" order: 2">
+                <h4>Personenangaben</h4>
+                <p> {{ Anschrift }} </p>
+            </div>
 
-    
+    </div>
+
 </div>
-
 
 </body>
 
@@ -100,8 +129,8 @@
 <script>
     var qrcode = new QRCode(document.getElementById("qrCodeLeistungserbringer"), {
         text: "https://www.google.com",
-        width: 200,
-        height: 200,
+        width: 250,
+        height: 250,
         colorDark : "#000000",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H

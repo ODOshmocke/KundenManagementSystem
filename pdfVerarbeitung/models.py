@@ -50,5 +50,12 @@ class UnterschriftsVerknuepfung(models.Model):
 class GeradeAngemeldet(models.Model):
     verbindungsCode = models.IntegerField(blank=True, null=True)
 
+
+class Leistungserbringer(models.Model):
+    vorname = models.CharField(max_length=200, blank=True, null=True)
+    nachname = models.CharField(max_length=200, blank=True, null=True)
+    ort = models.CharField(max_length=200, blank=True, null=True)
+
+
     def __str__(self):
         return str(self.verbindungsCode)
