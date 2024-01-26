@@ -7,7 +7,9 @@ from django.core.files.base import ContentFile
 from .models import GeradeAngemeldet
 
 
-def unterschriftView(request):
+def unterschriftView(request, unterschriftsDaten=None):
+
+    print(unterschriftsDaten, "unterschriftsDaten")
 
 
     if request.method == "POST" or request.method == "FILES":
@@ -27,9 +29,17 @@ def unterschriftView(request):
 
 
             #Irgendwas sagt mir das es hier einen Fehler geben wird
+            #Mit dem COde wird das Bild in der Datenbank gespeichert
+
             unterschrift_verknuepfung = unterschriftsVerknuepfung.save(commit=False)
             unterschrift_verknuepfung.verbindungsCode = verbindungsCode
-            unterschrift_verknuepfung.unterschriftPfad.save(f"{verbindungsCode}_unterschrift.png", ContentFile(binary_data))# das sieht sehr sketchy aus
+
+            #Es wird geschaut ob es sich um eine Unterschrift vom einem Leistungserbringer handelt
+            if unterschriftsDaten != None:
+                unterschrift_verknuepfung.unterschriftPfad.save(f"leistungserbringer/{verbindungsCode}_unterschrift.png", ContentFile(binary_data))
+            else:
+                unterschrift_verknuepfung.unterschriftPfad.save(f"{verbindungsCode}_unterschrift.png", ContentFile(binary_data))# das sieht sehr sketchy aus
+
             unterschrift_verknuepfung.save()
             GeradeAngemeldet.objects.create(verbindungsCode=verbindungsCode)
             print("Unterschrift wurde gespeichert")

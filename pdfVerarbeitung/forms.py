@@ -3,14 +3,19 @@ from django.forms import ModelForm
 from .models import UnterschriftsVerknuepfung
 from .models import Leistungserbringer
 
+
 class UnterschriftFormular(forms.Form):
     unterschrift = forms.ImageField(label="Unterschrift", required=False)
     verbindungsCode = forms.IntegerField(label="Verbindungscode", required=False)
+
 
 class UnterschriftsVerknuepfungForm(ModelForm):
     class Meta:
         model = UnterschriftsVerknuepfung
         exclude = "__all__"
+
+
+"""
 
 class LeistungserbringerFormular(ModelForm):
 
@@ -20,3 +25,4 @@ class LeistungserbringerFormular(ModelForm):
     class Meta:
         model = Leistungserbringer
         fields = "__all__"
+"""

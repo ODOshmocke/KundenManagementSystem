@@ -1,19 +1,26 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 from .forms import CreateEmailDelayForm
 from django.apps import apps
 from django.db.utils import OperationalError
 from django.db import models
 from register.models import KundenDaten
+from pdfVerarbeitung.models import Leistungserbringer
+
+import json
+import urllib.parse
 
 
 def dashboard(request):
     if request.method == 'POST':
         print("POST")
 
-        form = CreateEmailDelayForm(request.POST)
+        emailForm = CreateEmailDelayForm(request.POST)
+        LeistungserbringerDaten = Leistungserbringer.objects.all()
 
-        if form.is_valid():
-            obj = form.save()  # Objekt in der Datenbank speichern und zurückgeben
+
+        if emailForm.is_valid():
+            obj = emailForm.save()  # Objekt in der Datenbank speichern und zurückgeben
             obj_id = obj.id  # ID des Objekts abrufen
             print(obj_id)
             new_email = {obj_id: False}
@@ -25,6 +32,27 @@ def dashboard(request):
 
 
     else:
-        form = CreateEmailDelayForm()
+        emailForm = CreateEmailDelayForm()
+        LeistungserbringerDaten = Leistungserbringer.objects.get(id=1)
+        print(LeistungserbringerDaten, "LeistungserbringerDaten")
 
-    return render(request, 'indexDashboard.html', {'form': form})
+    return render(request, 'indexDashboard.html', {'form': emailForm, "LeistungserbringerDaten": LeistungserbringerDaten})
+
+
+def leistungserbringerDatenAenderung(leistungserbringerDaten):
+
+    print(leistungserbringerDaten.POST, "leistungserbringerDaten")
+    print(leistungserbringerDaten.POST.get("vorname"), "vorname")
+
+    Leistungserbringer.objects.filter(id=1).update(
+        vorname=leistungserbringerDaten.POST.get("vorname"),
+        nachname=leistungserbringerDaten.POST.get("nachname"),
+        adresse=leistungserbringerDaten.POST.get("adresse"))
+
+    return JsonResponse({"bestätigt": True})
+
+
+
+
+
+

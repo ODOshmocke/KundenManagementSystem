@@ -4,8 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://kit.fontawesome.com/f2e85778f9.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"></script>
     <style>
 
         h1 {
@@ -44,6 +46,54 @@
             width: 80%;
             display: flex;
             flex-direction: row;
+            overflow: hidden
+        }
+
+        .personenangaben {
+            order: 2;
+            overflow: hidden;
+            width: 40%;
+        }
+
+        .qrCodeLeistungserbringer {
+            order: 2;
+            width: 70%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .text-personenangaben {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: left;
+
+            margin-bottom: 8px;
+        }
+
+        .personenangaben-input {
+            margin-top: 0;
+            margin-bottom: 20px;
+            height: 40px;
+        }
+
+        .row-personenangaben {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .personenangaben-input-button {
+            width: 40px;
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .personenangaben-aenderungen-speichern {
+            width: 100%;
         }
 
 
@@ -88,16 +138,17 @@
 
 
 
-            <div class="outlines" id="unterschrift-box" style="display: flex; flex-direction: column; align-items: center; order: 1">
+            <div class="outlines" id="unterschrift-box" style="display: flex; flex-direction: column; align-items: center; order: 1; overflow: hidden">
 
                 <h4>Unterschrift</h4>
 
-                <div style="display: flex; flex-direction: row; ">
+                <div style="display: flex; flex-direction: row;">
 
-                    <div style="order: 2; padding-left: 10%;">
                         <!-- QR-Code auf der rechten Seite -->
-                        <div id="qrCodeLeistungserbringer"></div>
-                    </div>
+                        <div class="qrCodeLeistungserbringer">
+                        <!-- QR-Code auf der rechten Seite -->
+                            <div id="qrCodeLeistungserbringerImage" style="overflow: hidden"></div>
+                        </div>
 
                     <img src="/{{ MEDIA_URL }}unterschriften/2719_unterschrift_3Vzvf9u.png" width="500" height="250" class="outlines" style="order: 1; margin-left: -5%">
                     <!-- Bild auf der linken Seite -->
@@ -114,9 +165,36 @@
 
             </div>
 
-            <div class="outlines" style=" order: 2">
+            <div class="outlines personenangaben">
                 <h4>Personenangaben</h4>
-                <p> {{ Anschrift }} </p>
+            <div>
+
+
+
+
+                    <p class="text-personenangaben"> Vorname </p>
+                    <div class="row-personenangaben">
+                        <input type="text" class="form-control personenangaben-input" id="vornameInputLeistungserbringer" name="vorname" value="{{ LeistungserbringerDaten.vorname }}">
+                        <button class="outlines personenangaben-input personenangaben-input-button" onclick="löschePersonenangabenLeistungserbringer('vorname')"><img class="center" src="/{{ MEDIA_URL }}Icons/x-lg.svg"> </button>
+                    </div>
+
+                    <p class="text-personenangaben"> Nachname </p>
+                    <div class="row-personenangaben">
+                        <input type="text" class="form-control personenangaben-input" id="nachnameInputLeistungserbringer" name="nachname" value="{{ LeistungserbringerDaten.nachname }}">
+                        <button class="outlines personenangaben-input personenangaben-input-button" onclick="löschePersonenangabenLeistungserbringer('nachname')"><img class="center" src="/{{ MEDIA_URL }}Icons/x-lg.svg"> </button>
+                    </div>
+
+
+                    <p class="text-personenangaben"> Adresse </p>
+                    <div class="row-personenangaben">
+                        <input type="text" class="form-control personenangaben-input" id="adresseInputLeistungserbringer" name="adresse" value="{{ LeistungserbringerDaten.adresse }}">
+                        <button class="outlines personenangaben-input personenangaben-input-button" onclick="löschePersonenangabenLeistungserbringer('adresse')"><img class="center" src="/{{ MEDIA_URL }}Icons/x-lg.svg"> </button>
+                    </div>
+
+                    <button class="btn btn-primary personenangaben-aenderungen-speichern" onclick="sendePersonenaenderungLeistungserbringer()">Änderungen speichern</button>
+
+
+            </div>
             </div>
 
     </div>
@@ -127,15 +205,51 @@
 
 
 <script>
-    var qrcode = new QRCode(document.getElementById("qrCodeLeistungserbringer"), {
+    var qrcode = new QRCode(document.getElementById("qrCodeLeistungserbringerImage"), {
         text: "https://www.google.com",
-        width: 250,
-        height: 250,
+        width: 150,
+        height: 150,
         colorDark : "#000000",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
     });
 
+    function löschePersonenangabenLeistungserbringer(art) {
+
+        if (art === "vorname") {
+            document.getElementById("vornameInputLeistungserbringer").value = "";
+        }
+        if (art === "nachname") {
+            document.getElementById("nachnameInputLeistungserbringer").value = "";
+        }
+        if (art === "adresse") {
+            document.getElementById("adresseInputLeistungserbringer").value = "";
+        }
+
+    }
+
+    function sendePersonenaenderungLeistungserbringer() {
+
+        let data = {};
+
+        data = {
+            vorname: document.getElementById("vornameInputLeistungserbringer").value,
+            nachname: document.getElementById("nachnameInputLeistungserbringer").value,
+            adresse: document.getElementById("adresseInputLeistungserbringer").value,
+        };
+
+        data['csrfmiddlewaretoken'] = '{{ csrf_token }}';
+
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'leistungserbringerdatenaenderung' %}",
+
+            data: data,
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    }
 
 
 </script>

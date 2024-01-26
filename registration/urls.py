@@ -20,6 +20,8 @@ from django.conf.urls.static import static
 
 from register.views import register
 from dashboard.views import dashboard
+from dashboard.views import leistungserbringerDatenAenderung
+
 from pdfVerarbeitung.views import unterschriftView
 from pdfVerarbeitung.views import unterschriftsBestaetigungView
 
@@ -30,5 +32,9 @@ urlpatterns = [
     path("register/<str:kundenDaten>", register),
     path("dashboard/", dashboard),
     path("unterschrift/", unterschriftView),
+    path("unterschrift/<str:unterschriftsDaten>", unterschriftView),
+
+    # Ajax Requests
     path("unterschriftsbestaetigung", unterschriftsBestaetigungView, name="unterschriftsbestaetigung"),
+    path("leistungserbringerdatenaenderung", leistungserbringerDatenAenderung, name="leistungserbringerdatenaenderung"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
