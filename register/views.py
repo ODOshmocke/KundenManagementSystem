@@ -7,6 +7,7 @@ import urllib.parse
 from django.shortcuts import render
 from .forms import kundenDatenForm
 from .models import KundenDaten
+from pdfVerarbeitung.models import Leistungserbringer
 
 from pdfVerarbeitung.pdfFunktionen import verzeichnissErstellen, verzeichnissNamenErstellen
 from pdfVerarbeitung.pdfScript import Datenschutz, Patientenerklärung, \
@@ -83,20 +84,26 @@ def register(request, kundenDaten=None, kundenDatenInitial=None):
             print("Verzeichniss wurde erstellt", kommpletteWegZumKundenverzeichnis)
 
 
+            #von dem Leistungserbringer die Daten holen
+            leistungserbringer = Leistungserbringer.objects.get(id=1)
+            text_stempelName = leistungserbringer.vorname + " " + leistungserbringer.nachname
+            text_stempelAdresse = leistungserbringer.adresse
+
+
 
             datumHeute = datetime.date.today().strftime("%d.%m.%Y")
 
             if pdfFormularDatenschutz.is_valid():
                 Datenschutz.pdfFunktionenAufrufen(pdfFormularDatenschutz.cleaned_data, kunde)
-                Datenschutz.personen_daten(kunde, datumHeute)
+                Datenschutz.personen_daten(kunde, datumHeute, )
 
             if pdfFormularPatientenerklärung.is_valid():
                 Patientenerklärung.pdfFunktionenAufrufen(pdfFormularPatientenerklärung.cleaned_data, kunde)
-                Patientenerklärung.personen_daten(kunde, datumHeute)
+                Patientenerklärung.personen_daten(kunde, datumHeute, text_stempelName, text_stempelAdresse)
 
             if pdfFormularHöherwerigeversorgung.is_valid():
                 Mehrkostenerklärung.pdfFunktionenAufrufen(pdfFormularHöherwerigeversorgung.cleaned_data, kunde)
-                Mehrkostenerklärung.datum_stempel_text(kunde, datumHeute, "Stempel")
+                Mehrkostenerklärung.datum_stempel_text(kunde, datumHeute, text_stempelName, text_stempelAdresse)
 
 
     else:

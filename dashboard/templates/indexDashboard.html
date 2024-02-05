@@ -17,10 +17,12 @@
         }
 
         .outlines {
+            background-color: white;
             border: 1px #3b3f42 groove;
             border-radius: 5px;
             padding: 10px;
             margin: 10px;
+            box-shadow: rgba(0, 0, 0, 0.06) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 2px 6px 0px, rgba(0, 0, 0, 0.09) 0px 3px 8px 0px;
         }
 
         .überschriftEmailKonfigurieren {
@@ -28,6 +30,10 @@
             color: black;
             font-family: 'Roboto', sans-serif;
             text-align: center;
+        }
+        
+        body {
+            background-color: #f2f2f2;
         }
 
         .zentrierter-container {
@@ -95,7 +101,10 @@
         .personenangaben-aenderungen-speichern {
             width: 100%;
         }
-
+        
+        .confirm-button-color {
+            background-color: #1b75d0;
+        }
 
     </style>
 </head>
@@ -107,12 +116,12 @@
     <div class="outlines box-automatisierte-email" >
 
 
-    <div style="display: flex;">
+    <div style="display: flex; background-color: white;">
 
         <form method="post" id="day-form" style="width: 80%;">
             {% csrf_token %}
             {{ form|crispy }}
-            <button type="submit" class="btn btn-primary">Hinzufügen</button>
+            <button type="submit" class="btn btn-primary confirm-button-color">Hinzufügen</button>
         </form>
 
         <div class="outlines" style="height: 90%; width: 200px; ">
@@ -191,7 +200,7 @@
                         <button class="outlines personenangaben-input personenangaben-input-button" onclick="löschePersonenangabenLeistungserbringer('adresse')"><img class="center" src="/{{ MEDIA_URL }}Icons/x-lg.svg"> </button>
                     </div>
 
-                    <button class="btn btn-primary personenangaben-aenderungen-speichern" onclick="sendePersonenaenderungLeistungserbringer()">Änderungen speichern</button>
+                    <button class="btn btn-primary personenangaben-aenderungen-speichern confirm-button-color" onclick="sendePersonenaenderungLeistungserbringer()">Änderungen speichern</button>
 
 
             </div>

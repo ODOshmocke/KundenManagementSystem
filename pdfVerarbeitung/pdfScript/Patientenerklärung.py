@@ -29,7 +29,7 @@ x_einlagen = 284
 x_kreuz_normal = 70
 
 
-def personen_daten(kunde, datumHeute):
+def personen_daten(kunde, datumHeute, text_stempelName, text_stempelAdresse):
     seite, pdf, pfadKundenordner = pdfÖffnen(kunde)
 
     text_name = kunde.vorname + " " + kunde.nachname
@@ -46,8 +46,10 @@ def personen_daten(kunde, datumHeute):
     y_kv_nummer = 187
     y_verordnung = 213
 
+    y_stempelAdresse = 770
     y_datum = 782
     y_unterschrift = 730
+
     x_unterschrift = 150
     x_datum = 87
     x_stempel = 350
@@ -64,6 +66,9 @@ def personen_daten(kunde, datumHeute):
 
 
     seite.insert_text((x_datum, y_datum), text_verordnung, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
+
+    seite.insert_text((x_stempel, y_datum), text_stempelName, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
+    seite.insert_text((x_stempel, y_stempelAdresse), text_stempelAdresse, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
 
     unterschriftPfad = f"pdfVerarbeitung/kundenunterlagen/{verzeichnissNamenErstellen(kunde)}/unterschrift.png"
 

@@ -52,18 +52,21 @@ def ich_habe_mich_fuer_folgende_versorgung_entschieden(kunde, versorgung_Text=''
     pdfSpeichern(pdf, pfadKundenordner)
 
 
-def datum_stempel_text(kunde, datumHeute, text_stempel):
+def datum_stempel_text(kunde, datumHeute, text_stempelName, text_stempelAdresse):
     text_datum = str(datumHeute)
     seite, pdf, pfadKundenordner = pdfÖffnen(kunde)
 
     y_datum_und_stempel = 496
+    y_stempelAdresse = 484
     y_unterschrift = 440
     x_datum = 87
     x_unterschrift = 165
     x_stempel = 350
 
     seite.insert_text((x_datum, y_datum_und_stempel), text_datum, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
-    seite.insert_text((x_stempel, y_datum_und_stempel), text_stempel, fontsize=10, rotate=0, color=(0, 0, 0),
+
+    seite.insert_text((x_stempel, y_stempelAdresse), text_stempelAdresse, fontsize=10, rotate=0, color=(0, 0, 0), overlay=True)
+    seite.insert_text((x_stempel, y_datum_und_stempel), text_stempelName, fontsize=10, rotate=0, color=(0, 0, 0),
                       overlay=True)
 
     unterschriftPfad = f"pdfVerarbeitung/kundenunterlagen/{verzeichnissNamenErstellen(kunde)}/unterschrift.png"
@@ -85,9 +88,7 @@ def datum_stempel_text(kunde, datumHeute, text_stempel):
 
 
 def pdfFunktionenAufrufen(pdfFunktionen, kunde):
-    ich_habe_mich_fuer_eine_versorgung_mit_aufzahlung__mehrkosten__entschieden(kunde)
-    ich_habe_mich_fuer_folgende_versorgung_entschieden(kunde)
-    datum_stempel_text(kunde, "Test", "Test")
+
 
     mehrkostenerklärungFunktionen = {
         "ich_habe_mich_fuer_eine_versorgung_mit_aufzahlung_mehrkosten_entschieden_model": ich_habe_mich_fuer_eine_versorgung_mit_aufzahlung__mehrkosten__entschieden,
