@@ -33,7 +33,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("register/", register),
     path("register/<str:kundenDaten>", register),
-    path("dashboard/", dashboard),
+    path("dashboard/", dashboard, name="dashboard"),
     path("unterschrift/", unterschriftView),
     path("unterschrift/<str:unterschriftsDaten>", unterschriftView),
 
@@ -41,3 +41,6 @@ urlpatterns = [
     path("unterschriftsbestaetigung", unterschriftsBestaetigungView, name="unterschriftsbestaetigung"),
     path("leistungserbringerdatenaenderung", leistungserbringerDatenAenderung, name="leistungserbringerdatenaenderung"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+

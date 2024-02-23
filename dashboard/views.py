@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .forms import CreateEmailDelayForm
 from django.apps import apps
@@ -10,7 +11,7 @@ from pdfVerarbeitung.models import Leistungserbringer
 import json
 import urllib.parse
 
-
+@login_required
 def dashboard(request):
     if request.method == 'POST':
         print("POST")
@@ -39,6 +40,7 @@ def dashboard(request):
     return render(request, 'indexDashboard.html', {'form': emailForm, "LeistungserbringerDaten": LeistungserbringerDaten})
 
 
+@login_required
 def leistungserbringerDatenAenderung(leistungserbringerDaten):
 
     print(leistungserbringerDaten.POST, "leistungserbringerDaten")
